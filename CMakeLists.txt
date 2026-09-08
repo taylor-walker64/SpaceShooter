@@ -18,7 +18,8 @@ add_executable(main
     src/Player.cpp
     src/Projectile.cpp
     src/Enemy.cpp
-    src/checkCollision.cpp
+    src/AreCirclesOverlapping.cpp
+    src/EnemyManager.cpp
 )
 target_compile_features(main PRIVATE cxx_std_17)
 target_link_libraries(main PRIVATE SFML::Graphics)

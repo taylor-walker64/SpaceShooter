@@ -6,7 +6,7 @@ Projectile::Projectile(float x, float y) {
 	shape.setPosition(sf::Vector2f(projectileX, projectileY));
 	projectileSpeed = 7;
 	projectileDamage = 1;
-	projectileRadius = 2.f;
+	projectileRadius = 3.f;
 	shape.setRadius(projectileRadius);
 	shape.setFillColor(sf::Color::Red);
 }

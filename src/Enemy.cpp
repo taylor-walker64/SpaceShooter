@@ -1,5 +1,5 @@
 #include "Enemy.h"
-#include "checkCollision.h"
+#include "AreCirclesOverlapping.h"
 
 Enemy::Enemy(float x, float y) {
 	enemyX = x;
@@ -34,7 +34,7 @@ float Enemy::getEnemyRadius() {
 }
 
 bool Enemy::isHit(float projectileX, float projectileY, float projectileRadius) {
-	return checkCollision(projectileX, projectileY, projectileRadius, enemyX, enemyY, enemyRadius);
+	return AreCirclesOverlapping(projectileX, projectileY, projectileRadius, enemyX, enemyY, enemyRadius);
 }
 
 void Enemy::takeDamage(float damage) {

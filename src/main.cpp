@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "Projectile.h"
 #include "Enemy.h"
+#include "EnemyManager.h"
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -12,24 +13,10 @@ int main()
 	window.setFramerateLimit(60);
 
 	Player player;
+	EnemyManager enemyManager;
 
-	std::vector<Enemy> enemies;
-
-	enemies.push_back(Enemy(1280, 50));
-	enemies.push_back(Enemy(1280, 100));
-	enemies.push_back(Enemy(1280, 150));
-	enemies.push_back(Enemy(1280, 200));
-	enemies.push_back(Enemy(1280, 250));
-	enemies.push_back(Enemy(1280, 300));
-	enemies.push_back(Enemy(1280, 350));
-	enemies.push_back(Enemy(1280, 400));
-	enemies.push_back(Enemy(1280, 450));
-	enemies.push_back(Enemy(1280, 500));
-	enemies.push_back(Enemy(1280, 550));
-	enemies.push_back(Enemy(1280, 600));
-	enemies.push_back(Enemy(1280, 650));
-	enemies.push_back(Enemy(1280, 700));
-
+	enemyManager.spawnEnemy(1280, 0);
+	
 	while (window.isOpen())
 	{
 		while (const std::optional event = window.pollEvent())
@@ -39,7 +26,7 @@ int main()
 				window.close();
 			}
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::RShift))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z))
 		{
 			player.shoot();
 		}
@@ -61,47 +48,10 @@ int main()
 		}
 
 		player.update();
-		for (auto it = enemies.begin(); it != enemies.end();)	
-		{
-			it->update();
-			++it;
-		}
-
-		for (auto projectileIt = player.getProjectiles().begin(); projectileIt != player.getProjectiles().end();)
-		{
-			bool projectileHit = false;
-			for (auto enemyIt = enemies.begin(); enemyIt != enemies.end();)
-			{
-				if (enemyIt->isHit(projectileIt->getProjectileX(), projectileIt->getProjectileY(), projectileIt->getProjectileRadius())) 
-				{
-					enemyIt->takeDamage(1);
-					projectileHit = true;
-					projectileIt = player.projectileRemoval(projectileIt);
-					if (enemyIt->isDead()) 
-					{
-						enemyIt = enemies.erase(enemyIt);
-					}
-					else
-					{
-						++enemyIt;
-					}
-					break;
-				}
-				else
-				{
-					++enemyIt;
-				}
-			}
-			if (!projectileHit) {
-				++projectileIt;
-			}
-		}
-
+		enemyManager.update();
+		enemyManager.checkCollisions(player);
 		window.clear();
-		for (auto it = enemies.begin(); it != enemies.end(); ) {
-			it->draw(window);
-			++it;
-		}
+		enemyManager.draw(window);
 		player.draw(window);
 		window.display();
 
