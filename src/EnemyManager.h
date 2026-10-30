@@ -13,4 +13,6 @@ public:
 	void update();
 	void draw(sf::RenderWindow& window);
 	void checkCollisions(Player& player);
+	void checkPlayerCollision(Player& player);
+	bool isEncounterFinished();
 };

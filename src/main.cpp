@@ -3,6 +3,7 @@
 #include "Projectile.h"
 #include "Enemy.h"
 #include "EnemyManager.h"
+#include "Level.h"
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -14,8 +15,9 @@ int main()
 
 	Player player;
 	EnemyManager enemyManager;
+	Level level(1);
 
-	enemyManager.spawnEnemy(1280, 0);
+	level.startEncounter(enemyManager);
 	
 	while (window.isOpen())
 	{
@@ -50,6 +52,8 @@ int main()
 		player.update();
 		enemyManager.update();
 		enemyManager.checkCollisions(player);
+		enemyManager.checkPlayerCollision(player);
+		level.continueLevel(enemyManager);
 		window.clear();
 		enemyManager.draw(window);
 		player.draw(window);

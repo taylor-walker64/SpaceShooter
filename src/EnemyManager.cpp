@@ -1,6 +1,8 @@
 #include "EnemyManager.h"
 #include "Player.h"
+#include "AreCirclesOverlapping.h"
 #include <vector>
+#include <iostream>
 
 void EnemyManager::spawnEnemy(float x, float y) {
 	enemies.push_back(Enemy(x, y));
@@ -51,4 +53,21 @@ void EnemyManager::checkCollisions(Player& player) {
 			++projectileIt;
 		}
 	}
+}
+
+void EnemyManager::checkPlayerCollision(Player& player) {
+	for (auto enemyIt = enemies.begin(); enemyIt != enemies.end();)
+	{
+		if (AreCirclesOverlapping(player.getPlayerX(), player.getPlayerY(), player.getPlayerCollisionRadius(), enemyIt->getEnemyX(), enemyIt->getEnemyY(), enemyIt->getEnemyRadius())) {
+			player.takeDamage(1);
+			if (player.isDead()) {
+				std::cout << "Player dead!" << std::endl;
+			}
+		}
+		++enemyIt;
+	}
+}
+
+bool EnemyManager::isEncounterFinished() {
+	return enemies.empty();
 }
