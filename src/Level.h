@@ -14,4 +14,5 @@ public:
 	void advanceEncounter();
 	void startEncounter(EnemyManager&);
 	void continueLevel(EnemyManager&);
+	void reset();
 };

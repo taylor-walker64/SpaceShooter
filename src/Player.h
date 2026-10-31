@@ -38,6 +38,7 @@ public:
 	void draw(sf::RenderWindow& window);
 	void shoot();
 	void update();
+	void reset();
 	std::vector<Projectile>& getProjectiles();
 	std::vector<Projectile>::iterator projectileRemoval(std::vector<Projectile>::iterator projectileIt);
 };

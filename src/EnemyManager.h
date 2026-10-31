@@ -15,4 +15,5 @@ public:
 	void checkCollisions(Player& player);
 	void checkPlayerCollision(Player& player);
 	bool isEncounterFinished();
+	void clearEnemies();
 };

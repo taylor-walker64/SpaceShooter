@@ -147,3 +147,19 @@ void Player::takeDamage(float damage) {
 		damageAnimationClock.restart();
 	}
 }
+
+void Player::reset() {
+	playerX = 100;
+	playerY = 350;
+	playerHealth = 3;
+	isInvulnerable = false;
+	damageAnimationVisible = false;
+	iFramesClock.restart();
+	damageAnimationClock.restart();
+	projectiles.clear();
+	playerSprite.setPosition(sf::Vector2f(playerX, playerY));
+	currentFrame = 0;
+	animationClock.restart();
+	playerSprite.setTextureRect(animationFrames[currentFrame]);
+	playerSprite.setColor(sf::Color::White);
+}

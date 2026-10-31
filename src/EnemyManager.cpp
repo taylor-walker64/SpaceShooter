@@ -71,3 +71,7 @@ void EnemyManager::checkPlayerCollision(Player& player) {
 bool EnemyManager::isEncounterFinished() {
 	return enemies.empty();
 }
+
+void EnemyManager::clearEnemies() {
+	enemies.clear();
+}
