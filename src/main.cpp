@@ -4,6 +4,7 @@
 #include "Enemy.h"
 #include "EnemyManager.h"
 #include "Level.h"
+#include "ProjectileManager.h"
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -30,6 +31,7 @@ int main()
 	resetText.setPosition({ 640.f, 400.f });
 	Player player;
 	EnemyManager enemyManager;
+	ProjectileManager projectileManager;
 	GameState currentState = GameState::Playing;
 	Level level(1);
 
@@ -50,7 +52,7 @@ int main()
 		if (currentState == GameState::Playing) {
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z))
 			{
-				player.shoot();
+				player.shoot(projectileManager);
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
 			{
@@ -70,15 +72,18 @@ int main()
 			}
 
 			player.update();
-			enemyManager.update();
-			enemyManager.checkCollisions(player);
+			projectileManager.update();
+			enemyManager.update(projectileManager);
+			enemyManager.checkCollisions(projectileManager);
 			enemyManager.checkPlayerCollision(player);
+			enemyManager.checkPlayerProjectileCollision(player, projectileManager);
 			if (player.isDead()) {
 				currentState = GameState::GameOver;
 			}
 			level.continueLevel(enemyManager);
 			enemyManager.draw(window);
 			player.draw(window);
+			projectileManager.draw(window);
 		}
 
 		if (currentState == GameState::GameOver)
@@ -89,6 +94,7 @@ int main()
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R)) {
 				player.reset();
 				enemyManager.clearEnemies();
+				projectileManager.clearProjectiles();
 				level.reset();
 				level.startEncounter(enemyManager);
 				currentState = GameState::Playing;

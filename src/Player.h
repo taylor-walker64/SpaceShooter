@@ -1,8 +1,8 @@
 #pragma once
-#include <vector>
 #include <SFML/Graphics.hpp>
-#include "Projectile.h"
 #include <array>
+
+class ProjectileManager;
 
 class Player {
 private:
@@ -14,7 +14,6 @@ private:
 	bool isInvulnerable = false;
 	bool damageAnimationVisible = false;
 	sf::CircleShape shape;
-	std::vector<Projectile> projectiles;
 	sf::Clock fireClock;
 	sf::Clock iFramesClock;
 	sf::Clock damageAnimationClock;
@@ -36,9 +35,7 @@ public:
 	void playerMoveUp();
 	void playerMoveDown();
 	void draw(sf::RenderWindow& window);
-	void shoot();
+	void shoot(ProjectileManager& projectileManager);
 	void update();
 	void reset();
-	std::vector<Projectile>& getProjectiles();
-	std::vector<Projectile>::iterator projectileRemoval(std::vector<Projectile>::iterator projectileIt);
 };

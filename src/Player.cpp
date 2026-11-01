@@ -1,8 +1,9 @@
 #include "Player.h"
+#include "ProjectileManager.h"
 #include <iostream>
 
 Player::Player() 
-	: playerTexture("../../../../assets/playerspritesheet.png"),
+	: playerTexture("../../../../assets/sprites/playerspritesheet.png"),
 	  playerSprite(playerTexture)
 {
 	playerX = 100;
@@ -11,7 +12,7 @@ Player::Player()
 	playerHealth = 3;
 	shape.setRadius(10.f);
 	shape.setFillColor(sf::Color::Green);
-	playerSprite.setScale({2.0f, 2.0f});
+	playerSprite.setScale({1.6f, 1.6f});
 	playerSprite.setOrigin({32.f, 32.f});
 	playerSprite.setPosition(sf::Vector2f(playerX, playerY));
 	animationFrames = {
@@ -53,7 +54,7 @@ void Player::playerMoveRight() {
 
 void Player::playerMoveUp() {
 	sf::FloatRect bounds = playerSprite.getGlobalBounds();
-	if (bounds.position.y - playerSpeed >= 0) {
+	if (bounds.position.y - playerSpeed >= -16) {
 		playerY -= playerSpeed;
 	}
 	playerSprite.setPosition(sf::Vector2f(playerX, playerY));
@@ -61,7 +62,7 @@ void Player::playerMoveUp() {
 
 void Player::playerMoveDown() {
 	sf::FloatRect bounds = playerSprite.getGlobalBounds();
-	if (bounds.position.y + playerSpeed <= 660) {
+	if (bounds.position.y + playerSpeed <= 644) {
 		playerY += playerSpeed;
 	}
 	playerSprite.setPosition(sf::Vector2f(playerX, playerY));
@@ -80,15 +81,11 @@ void Player::draw(sf::RenderWindow& window) {
 	//debugHitbox.setOutlineThickness(2.f);
 	//window.draw(debugHitbox);
 	// End debug box
-
-	for (Projectile& projectile : projectiles) {
-		projectile.draw(window);
-	}
 }
 
-void Player::shoot() {
+void Player::shoot(ProjectileManager& projectileManager) {
 	if (fireClock.getElapsedTime().asSeconds() >= 0.25f) {
-		projectiles.push_back(Projectile(playerX + 40, playerY));
+		projectileManager.spawnProjectile(playerX + 40, playerY, 1.0f, ProjectileOwner::Player);
 		fireClock.restart();
 	}
 	
@@ -102,13 +99,6 @@ void Player::update() {
 		}
 		playerSprite.setTextureRect(animationFrames[currentFrame]);
 		animationClock.restart();
-	}
-	for (auto it = projectiles.begin(); it != projectiles.end();) {
-		it->projectileMovement();
-		if (it->getProjectileX() > 1280) {
-			it = projectiles.erase(it);
-		}
-		else ++it;
 	}
 	if (isInvulnerable && iFramesClock.getElapsedTime().asSeconds() >= 1.00f) {
 		isInvulnerable = false;
@@ -125,14 +115,6 @@ void Player::update() {
 		}
 		damageAnimationClock.restart();
 	}
-}
-
-std::vector<Projectile>& Player::getProjectiles() {
-	return projectiles;
-}
-
-std::vector<Projectile>::iterator Player::projectileRemoval(std::vector<Projectile>::iterator projectileIt) {
-	return projectiles.erase(projectileIt);
 }
 
 bool Player::isDead() {
@@ -156,7 +138,6 @@ void Player::reset() {
 	damageAnimationVisible = false;
 	iFramesClock.restart();
 	damageAnimationClock.restart();
-	projectiles.clear();
 	playerSprite.setPosition(sf::Vector2f(playerX, playerY));
 	currentFrame = 0;
 	animationClock.restart();

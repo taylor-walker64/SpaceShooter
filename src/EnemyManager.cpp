@@ -1,17 +1,28 @@
 #include "EnemyManager.h"
 #include "Player.h"
 #include "AreCirclesOverlapping.h"
+#include "ProjectileManager.h"
 #include <vector>
 #include <iostream>
+#include <stdexcept>
 
-void EnemyManager::spawnEnemy(float x, float y) {
-	enemies.push_back(Enemy(x, y));
+EnemyManager::EnemyManager() {
+	if (!enemyTexture.loadFromFile("assets/sprites/enemydronespritesheet.png")) {
+		throw std::runtime_error("Failed to load enemy drone texture");
+	}
 }
 
-void EnemyManager::update() {
-	for (auto it = enemies.begin(); it != enemies.end();)
-	{
+void EnemyManager::spawnEnemy(float x, float y) {
+	enemies.push_back(Enemy(x, y, enemyTexture));
+}
+
+void EnemyManager::update(ProjectileManager& projectileManager) {
+	for (auto it = enemies.begin(); it != enemies.end();) {
 		it->update();
+		it->updateAnimation();
+		if (it->canFire()) {
+			projectileManager.spawnProjectile(it->getEnemyX(), it->getEnemyY(), -1.0f, ProjectileOwner::Enemy);
+		}
 		++it;
 	}
 }
@@ -23,29 +34,23 @@ void EnemyManager::draw(sf::RenderWindow& window) {
 	}
 }
 
-void EnemyManager::checkCollisions(Player& player) {
-	for (auto projectileIt = player.getProjectiles().begin(); projectileIt != player.getProjectiles().end();)
-	{
+void EnemyManager::checkCollisions(ProjectileManager& projectileManager) {
+	for (auto projectileIt = projectileManager.getProjectiles().begin(); projectileIt != projectileManager.getProjectiles().end();) {
 		bool projectileHit = false;
-		for (auto enemyIt = enemies.begin(); enemyIt != enemies.end();)
-		{
-			if (enemyIt->isHit(projectileIt->getProjectileX(), projectileIt->getProjectileY(), projectileIt->getProjectileRadius()))
-			{
+		for (auto enemyIt = enemies.begin(); enemyIt != enemies.end();) {
+			if (projectileIt->getProjectileOwner() == ProjectileOwner::Player && enemyIt->isHit(projectileIt->getProjectileX(), projectileIt->getProjectileY(), projectileIt->getProjectileRadius())) {
 				enemyIt->takeDamage(1);
 				projectileHit = true;
-				projectileIt = player.projectileRemoval(projectileIt);
-				if (enemyIt->isDead())
-				{
+				projectileIt = projectileManager.projectileRemoval(projectileIt);
+				if (enemyIt->isDead()) {
 					enemyIt = enemies.erase(enemyIt);
 				}
-				else
-				{
+				else {
 					++enemyIt;
 				}
 				break;
 			}
-			else
-			{
+			else {
 				++enemyIt;
 			}
 		}
@@ -65,6 +70,18 @@ void EnemyManager::checkPlayerCollision(Player& player) {
 			}
 		}
 		++enemyIt;
+	}
+}
+
+void EnemyManager::checkPlayerProjectileCollision(Player& player, ProjectileManager& projectileManager) {
+	for (auto projectileIt = projectileManager.getProjectiles().begin(); projectileIt != projectileManager.getProjectiles().end();) {
+		if (projectileIt->getProjectileOwner() == ProjectileOwner::Enemy && AreCirclesOverlapping(player.getPlayerX(), player.getPlayerY(), player.getPlayerCollisionRadius(), projectileIt->getProjectileX(), projectileIt->getProjectileY(), projectileIt->getProjectileRadius())) {
+			player.takeDamage(1);
+			projectileIt = projectileManager.projectileRemoval(projectileIt);
+		}
+		else {
+			++projectileIt;
+		}
 	}
 }
 

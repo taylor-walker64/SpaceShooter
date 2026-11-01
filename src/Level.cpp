@@ -48,5 +48,5 @@ void Level::continueLevel(EnemyManager& enemyManager) {
 
 void Level::reset() {
 	encounterNumber = 1;
-	levelComplete - false;
+	levelComplete = false;
 }
