@@ -5,6 +5,7 @@
 #include "EnemyManager.h"
 #include "Level.h"
 #include "ProjectileManager.h"
+#include "Background.h"
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -29,6 +30,7 @@ int main()
 	gameOverText.setPosition({ 640.f, 360.f });
 	resetText.setOrigin((resetRect.size / 2.0f));
 	resetText.setPosition({ 640.f, 400.f });
+	Background background;
 	Player player;
 	EnemyManager enemyManager;
 	ProjectileManager projectileManager;
@@ -48,6 +50,7 @@ int main()
 		}
 
 		window.clear();
+		background.draw(window);
 
 		if (currentState == GameState::Playing) {
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z))

@@ -4,7 +4,7 @@
 Enemy::Enemy(float x, float y, const sf::Texture& texture) : sprite(texture) {
 	enemyX = x;
 	enemyY = y;
-	enemySpeed = 1;
+	enemySpeed = 3;
 	enemyRadius = 15.f;
 	enemyHealth = 1;
 	firingCooldown = 2.0f;

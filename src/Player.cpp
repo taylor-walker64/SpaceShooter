@@ -3,7 +3,7 @@
 #include <iostream>
 
 Player::Player() 
-	: playerTexture("../../../../assets/sprites/playerspritesheet.png"),
+	: playerTexture("../../../../assets/sprites/playerspritesheetV2.png"),
 	  playerSprite(playerTexture)
 {
 	playerX = 100;
